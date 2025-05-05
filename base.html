@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}My Project{% endblock %}</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+</head>
+<body>
+    {% block content %}
+    <!-- Content from child templates will go here -->
+    {% endblock %}
+</body>
+</html>

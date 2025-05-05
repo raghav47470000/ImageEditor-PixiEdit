@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Download Image</title>
+</head>
+<body>
+    <h1>Download Image</h1>
+    <p>Your image is ready for download:</p>
+    <a href="{{ image.original_image.url }}" download>Download Original Image</a>
+    {% if image.edited_image %}
+        <a href="{{ image.edited_image.url }}" download>Download Edited Image</a>
+    {% endif %}
+    <a href="{% url 'my_app:home' %}">Back to Home</a>
+</body>
+</html>

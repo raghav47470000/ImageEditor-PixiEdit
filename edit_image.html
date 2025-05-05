@@ -1,0 +1,302 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Image</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333;
+        }
+        header {
+            background-color: rgba(106, 13, 173, 0.8);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        .sidebar {
+            position: absolute;
+            top: 110px;
+            left: 0;
+            height: calc(100% - 110px);
+            width: 100px;
+            background-color: rgba(106, 13, 173, 0.9);
+            overflow-x: hidden;
+            transition: width 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 1rem;
+        }
+        .sidebar.expanded {
+            width: 300px;
+        }
+        .sidebar button {
+            background-color: white;
+            color: #8e44ad;
+            border: none;
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            width: 80%;
+            text-align: center;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #732d91;
+        }
+        .sidebar .content {
+            display: none;
+            margin-top: 1rem;
+            width: 90%;
+            text-align: center;
+            color: white;
+        }
+        .sidebar.expanded .content {
+            display: block;
+        }
+        .main-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-left: 100px;
+            padding: 1rem;
+            gap: 2rem;
+        }
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .image-container div {
+            flex: 1;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #4a148c;
+        }
+        .slider-container {
+            margin: 2rem 0;
+        }
+        .slider-container span {
+            font-weight: bold;
+            color: white;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: #6a0dad;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 style="color: white;">Edit Image</h1>
+    </header>
+    <div class="sidebar" id="sidebar">
+        <button onclick="toggleSidebar('grayscale')">Grayscale</button>
+        <div class="content" id="grayscale-content">
+            <form method="post">
+                {% csrf_token %}
+                <button name="action" value="grayscale">Apply Grayscale</button>
+            </form>
+        </div>
+        
+        <button onclick="toggleSidebar('rotate')">Rotate</button>
+        <div class="content" id="rotate-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="rotate_angle">Angle:</label>
+                <input type="range" id="rotate_angle" name="rotate_angle" min="0" max="360" value="0" 
+                       oninput="document.getElementById('rotate_value').textContent = this.value">
+                <span id="rotate_value">0</span>°
+                <button name="action" value="rotate">Rotate</button>
+            </form>
+        </div>
+        
+        <button onclick="toggleSidebar('resize')">Resize</button>
+        <div class="content" id="resize-content">
+            <form method="post">
+                {% csrf_token %}
+                <div class="slider-container">
+                    <label for="resize_width">Width:</label>
+                    <input type="range" id="resize_width" name="resize_width" min="1" max="1000" value="500" 
+                           oninput="document.getElementById('width_value').textContent = this.value">
+                    <span id="width_value">500</span>px
+                </div>
+                <div class="slider-container">
+                    <label for="resize_height">Height:</label>
+                    <input type="range" id="resize_height" name="resize_height" min="1" max="1000" value="500" 
+                           oninput="document.getElementById('height_value').textContent = this.value">
+                    <span id="height_value">500</span>px
+                </div>
+                <button name="action" value="resize">Resize</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('flip')">Flip</button>
+        <div class="content" id="flip-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="flip_direction">Direction:</label>
+                <select id="flip_direction" name="flip_direction">
+                    <option value="horizontal">Horizontal</option>
+                    <option value="vertical">Vertical</option>
+                </select>
+                <button name="action" value="flip">Apply Flip</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('brightness')">Brightness</button>
+        <div class="content" id="brightness-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="brightness_factor">Brightness:</label>
+                <input type="range" id="brightness_factor" name="brightness_factor" min="0.1" max="2.0" step="0.1" value="1.0" 
+                       oninput="document.getElementById('brightness_value').textContent = this.value">
+                <span id="brightness_value">1.0</span>
+                <button name="action" value="brightness">Apply Brightness</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('contrast')">Contrast</button>
+        <div class="content" id="contrast-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="contrast_factor">Contrast:</label>
+                <input type="range" id="contrast_factor" name="contrast_factor" min="0.1" max="2.0" step="0.1" value="1.0" 
+                       oninput="document.getElementById('contrast_value').textContent = this.value">
+                <span id="contrast_value">1.0</span>
+                <button name="action" value="contrast">Apply Contrast</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('saturation')">Saturation</button>
+        <div class="content" id="saturation-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="saturation_factor">Saturation:</label>
+                <input type="range" id="saturation_factor" name="saturation_factor" min="0.1" max="2.0" step="0.1" value="1.0" 
+                       oninput="document.getElementById('saturation_value').textContent = this.value">
+                <span id="saturation_value">1.0</span>
+                <button name="action" value="saturation">Apply Saturation</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('blur')">Blur</button>
+        <div class="content" id="blur-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="blur_radius">Blur Radius:</label>
+                <input type="range" id="blur_radius" name="blur_radius" min="0" max="10" step="0.1" value="2.0" 
+                       oninput="document.getElementById('blur_value').textContent = this.value">
+                <span id="blur_value">2.0</span>
+                <button name="action" value="blur">Apply Blur</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('crop')">Crop</button>
+        <div class="content" id="crop-content">
+            <form method="post">
+                {% csrf_token %}
+                <div class="slider-container">
+                    <label for="left">Left:</label>
+                    <input type="range" id="left" name="left" min="0" max="1000" value="0" 
+                           oninput="document.getElementById('left_value').textContent = this.value">
+                    <span id="left_value">0</span>px
+                </div>
+                <div class="slider-container">
+                    <label for="top">Top:</label>
+                    <input type="range" id="top" name="top" min="0" max="1000" value="0" 
+                           oninput="document.getElementById('top_value').textContent = this.value">
+                    <span id="top_value">0</span>px
+                </div>
+                <div class="slider-container">
+                    <label for="right">Right:</label>
+                    <input type="range" id="right" name="right" min="0" max="1000" value="500" 
+                           oninput="document.getElementById('right_value').textContent = this.value">
+                    <span id="right_value">500</span>px
+                </div>
+                <div class="slider-container">
+                    <label for="bottom">Bottom:</label>
+                    <input type="range" id="bottom" name="bottom" min="0" max="1000" value="500" 
+                           oninput="document.getElementById('bottom_value').textContent = this.value">
+                    <span id="bottom_value">500</span>px
+                </div>
+                <button name="action" value="crop">Apply Crop</button>
+            </form>
+        </div>
+
+        <button onclick="toggleSidebar('sharpen')">Sharpen</button>
+        <div class="content" id="sharpen-content">
+            <form method="post">
+                {% csrf_token %}
+                <label for="sharpness_factor">Sharpness:</label>
+                <input type="range" id="sharpness_factor" name="sharpness_factor" min="0.1" max="10.0" step="0.1" value="1.0" 
+                       oninput="document.getElementById('sharpness_value').textContent = this.value">
+                <span id="sharpness_value">1.0</span>
+                <button name="action" value="sharpen">Apply Sharpen</button>
+            </form>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="image-container">
+            <div>
+                <h2>Original Image</h2>
+                <img src="{{ image.original_image.url }}" alt="Original Image">
+            </div>
+            {% if image.edited_image %}
+            <div>
+                <h2>Edited Image</h2>
+                <img src="{{ image.edited_image.url }}" alt="Edited Image">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'my_app:home' %}" class="back-link">Back to Home</a>
+    <script>
+        function toggleSidebar(section) {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById(`${section}-content`);
+            const allContents = document.querySelectorAll('.content');
+            
+            sidebar.classList.add('expanded');
+            allContents.forEach(c => {
+                if (c !== content) c.style.display = 'none';
+            });
+            if (content.style.display === 'block') {
+                sidebar.classList.remove('expanded');
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

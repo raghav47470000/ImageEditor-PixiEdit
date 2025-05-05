@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Image Editor</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'images/editor.png' %}"); /* Background image */
+            background-size: cover; /* Ensure the image covers the entire page */
+            background-repeat: no-repeat; /* Prevent the image from repeating */
+            background-attachment: fixed; /* Make the background fixed while scrolling */
+            background-position: center; /* Center the image */
+            color: #333;
+        }
+        header {
+            background-color: rgba(106, 13, 173, 0.8); /* Semi-transparent purple */
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .home-button {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(106, 13, 173, 0.8); /* Semi-transparent purple */
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .home-button:hover {
+            background-color: rgba(90, 12, 160, 0.9); /* Darker purple for hover */
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+        }
+        .top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .top-right button {
+            background-color: rgba(106, 13, 173, 0.8); /* Semi-transparent purple */
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .top-right button:hover {
+            background-color: rgba(90, 12, 160, 0.9); /* Darker purple for hover */
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Canva-style Upload Container --- */
+        .upload-section {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(245, 240, 250, 0.9); /* Light purple with transparency */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        .upload-section h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #4a148c; /* Dark purple for headings */
+        }
+        .upload-section p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .upload-btn {
+            background-color: #8e44ad; /* Purple button */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .upload-btn:hover {
+            background-color: #732d91; /* Darker purple for hover */
+        }
+
+        /* --- Uploaded Images List --- */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        ul li img {
+            max-width: 100px;
+            border-radius: 4px;
+        }
+        ul li a {
+            text-decoration: none;
+            color: #6a0dad; /* Purple links */
+            margin-left: 1rem;
+        }
+        ul li a:hover {
+            text-decoration: underline;
+        }
+        .empty-message {
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'my_app:about' %}" class="home-button">Home</a>
+        <h1>Welcome to the PixiEdit</h1>
+        <div class="top-right">
+            {% if user.is_authenticated %}
+                <button onclick="window.location.href='{% url 'my_app:logout' %}'">Logout</button>
+            {% else %}
+                <button onclick="window.location.href='{% url 'my_app:login' %}'">Login</button>
+                <button onclick="window.location.href='{% url 'my_app:signup' %}'">Signup</button>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Canva-style Upload Form -->
+        <div class="upload-section">
+            <h2>Free Online Photo Editor</h2>
+            <p>Take your photos further with our free photo editor. Upload, edit, and share instantly from one place.</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="upload-btn">📤 Upload your image</button>
+            </form>
+        </div>
+
+        <!-- Display Uploaded Images -->
+        <h2>Uploaded Images</h2>
+        <ul>
+            {% for image in images %}
+                <li>
+                    <img src="{{ image.original_image.url }}" alt="Image {{ image.id }}">
+                    <div>
+                        <a href="{% url 'my_app:edit_image' image.id %}">Edit</a>
+                        <a href="{% url 'my_app:download_image' image.id %}">Download</a>
+                        <a href="{% url 'my_app:delete_image' image.id %}">Delete</a>
+                    </div>
+                </li>
+            {% empty %}
+                <p class="empty-message">No images uploaded yet.</p>
+            {% endfor %}
+        </ul>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'my_app:feedback' %}">Submit Feedback</a>
+        </div>
+          
+
+    </div>
+</body>
+</html>

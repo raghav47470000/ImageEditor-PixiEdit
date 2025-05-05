@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Upload Image</title>
+</head>
+<body>
+    <h1>Upload a New Image</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'my_app:home' %}">Back to Home</a>
+</body>
+</html>

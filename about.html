@@ -1,0 +1,363 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PixiEdit - About</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            background-image: url("{% static 'images/vg.png' %}");
+            background-size: cover;
+            background-position: center;
+        }
+        header {
+            background-image: linear-gradient(rgba(106, 13, 173, 0.8), rgba(74, 20, 140, 0.8)), url("{% static 'images/hero_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 6rem 2rem;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        header h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        header p {
+            font-size: 1.5rem;
+            margin: 1rem 0 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .cta-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            background-color: #ff6f61;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .cta-button:hover {
+            background-color: #e65c50;
+            transform: translateY(-3px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #6a0dad;
+            margin-bottom: 1rem;
+        }
+        .section p {
+            line-height: 1.6;
+        }
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .about-text {
+            flex: 1;
+        }
+        .about-image {
+            flex: 1;
+            text-align: center;
+        }
+        .about-image img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .feature {
+            flex: 1 1 calc(33.333% - 1rem);
+            background-color: #f9f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .feature h3 {
+            color: #4a148c;
+            margin-bottom: 0.5rem;
+        }
+        .feature p {
+            font-size: 0.9rem;
+        }
+        .feature img {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .how-it-works-image {
+            width: 50%;
+            height: auto;
+        }
+        .how-it-works {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            }
+
+        .how-it-works div {
+            flex: 1 1 45%;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            }
+
+        .how-it-works img {
+            flex: 1 1 45%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-top: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #6a0dad;
+            color: white;
+            margin-top: 2rem;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .faq-item {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 1rem;
+        }
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: left;
+            padding: 1rem;
+            cursor: pointer;
+            color: #4a148c;
+            transition: background 0.3s ease;
+        }
+        .faq-question:hover {
+            background-color: #f0e6ff;
+        }
+        .faq-answer {
+            padding: 0 1rem 1rem;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header style="text-align: center; background-color: #282c34; color: white; padding: 50px 20px;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 20px;">Welcome to PixiEdit</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 30px;">Transform your images effortlessly and creatively</p>
+        <a href="{% url 'my_app:home' %}" class="cta-button" style="display: inline-block; background-color: white; color: #6a0dad; padding: 10px 20px; text-decoration: none; font-size: 1rem; border-radius: 5px;">Get Started</a>
+    </header>
+    <div class="container">
+        <div class="section">
+            <div class="about-content" style="display: flex; align-items: center; gap: 20px;">
+                <div class="about-text" style="flex: 1;">
+                    <h2>About PixiEdit</h2>
+                    <p>
+                        PixiEdit is a user-friendly online image editor designed to simplify the photo editing process for everyone—from casual users to creative professionals. With an intuitive interface and essential tools at your fingertips, PixiEdit makes it easy to enhance, transform, and personalize your images without the need for advanced software.
+                    </p>
+                    <p>
+                        Whether you're looking to convert an image to grayscale, resize for social media, rotate or flip, or adjust brightness and contrast, PixiEdit provides fast, high-quality editing right in your browser. The platform supports popular formats like JPG, PNG, JPEG, and WEBP, ensuring compatibility and ease of use.
+                    </p>
+                    <p>
+                        PixiEdit was built with accessibility in mind. There's no need to install anything — all editing happens securely in your browser, making it accessible across desktop and mobile devices. For users who create an account, advanced features unlock even more creative possibilities.
+                    </p>
+                    <p>
+                        Our mission is simple: give users the power to express their creativity without barriers. Whether you're editing personal photos, creating visuals for work or school, or managing content for social media, PixiEdit helps you do it quickly and beautifully.
+                    </p>
+                    <p><strong>"PixiEdit: Where creativity meets simplicity."</strong></p>
+                </div>
+                <div class="about-images" style="flex: 1; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                    <img src="{% static 'images/about1.jpeg' %}" alt="About PixiEdit 1" style="width: 80%; height: auto;">
+                    <img src="{% static 'images/about.jpeg' %}" alt="About PixiEdit 2" style="width: 80%; height: auto;">
+                </div>
+            </div>
+        </div>
+    
+
+        <!-- Features Section -->
+        <div class="section">
+            <h2>Features</h2>
+            <p><strong>"Edit, enhance, and elevate with PixiEdit."</strong></p>
+            <div class="features">
+                <div class="feature">
+                    <h3>Grayscale</h3>
+                    <p>Convert your images to black and white with a single click.</p>
+                    <img src="{% static 'images/grayscale.jpeg' %}" alt="Grayscale Example">
+                </div>
+                <div class="feature">
+                    <h3>Saturation</h3>
+                    <p>Enhance or reduce the color intensity of your images effortlessly.</p>
+                    <img src="{% static 'images/saturation.jpeg' %}" alt="Saturation Example">
+                </div>
+                <div class="feature">
+                    <h3>Sharpen</h3>
+                    <p>Make your images clearer and more defined with sharpening tools.</p>
+                    <img src="{% static 'images/sharpen.jpeg' %}" alt="Sharpen Example">
+                </div>
+                <div class="feature">
+                    <h3>Flip</h3>
+                    <p>Flip your images horizontally or vertically for a mirrored effect.</p>
+                    <img src="{% static 'images/flip.jpeg' %}" alt="Flip Example">
+                </div>
+                <div class="feature">
+                    <h3>Brightness</h3>
+                    <p>Enhance or reduce the brightness of your images.</p>
+                    <img src="{% static 'images/brightness.jpeg' %}" alt="Brightness Example">
+                </div>
+                <div class="feature">
+                    <h3>Contrast</h3>
+                    <p>Adjust the contrast to make your images stand out.</p>
+                    <img src="{% static 'images/contrast.jpeg' %}" alt="Contrast Example">
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="section" style="display: flex; align-items: center; gap: 20px; flex-direction: row-reverse;">
+            <img src="{% static 'images/how.jpeg' %}" alt="How It Works" style="width: 40%; height: auto; margin-top: 10px;">
+            <div>
+                <h2>How It Works</h2>
+                <div class="how-it-works">
+                    <div>
+                        <p>
+                            Using PixiEdit is simple:
+                            <ol style="padding-left: 1.2rem;">
+                                <li><strong>Upload</strong> your image.</li>
+                                <li><strong>Edit</strong> using the available tools.</li>
+                                <li><strong>Download</strong> your final result.</li>
+                            </ol>
+                            Advanced features like brightness, contrast, and cropping are available for logged-in users.
+                        </p>
+                        <p><strong>"From ordinary to extraordinary with PixiEdit."</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Why Choose PixiEdit?</h2>
+            <p>
+                PixiEdit is designed with simplicity and functionality in mind. Whether you're a professional photographer or just someone who wants to enhance their personal photos, our tool provides all the essential features you need. 
+                With a clean interface and powerful editing capabilities, PixiEdit ensures that you can achieve your desired results quickly and effortlessly.
+            </p>
+            <ul>
+                <li>Easy-to-use interface for beginners.</li>
+                <li>Advanced features for professionals.</li>
+                <li>Fast and secure image processing.</li>
+                <li>Accessible from any device with an internet connection.</li>
+            </ul>
+            <p><strong>"PixiEdit: Simple tools, stunning results."</strong></p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="section">
+            <h2>Your questions, answered</h2>
+            <div class="faq">
+                <div class="faq-item">
+                    <button class="faq-question">Does PixiEdit leave a watermark?</button>
+                    <div class="faq-answer">
+                        <p>No, PixiEdit does not leave any watermark on your edited images.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Can I use PixiEdit on desktop and mobile?</button>
+                    <div class="faq-answer">
+                        <p>Yes, PixiEdit works smoothly on both desktop and mobile devices.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">What image file types can I upload?</button>
+                    <div class="faq-answer">
+                        <p>You can upload JPG, JPEG, PNG, and WEBP images.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">What formats can I export my image as?</button>
+                    <div class="faq-answer">
+                        <p>You can download your edited images in PNG or JPG formats.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Do I have to pay to use PixiEdit?</button>
+                    <div class="faq-answer">
+                        <p>No, all essential features of PixiEdit are completely free to use.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">How can I make a photo collage?</button>
+                    <div class="faq-answer">
+                        <p>This feature is coming soon! Stay tuned for updates.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">How do I edit the background of photos?</button>
+                    <div class="faq-answer">
+                        <p>Background editing is available for logged-in users in the advanced tools section.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer>
+        <p>&copy; 2025 PixiEdit. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for FAQ toggling -->
+    <script>
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
